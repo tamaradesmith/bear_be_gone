@@ -22,6 +22,11 @@ const styles = StyleSheet.create({
     minHeight: '100%',
     minWidth: '100%',
   },
+  homeGrey: {
+    minHeight: '100%',
+    minWidth: '100%',
+    opacity: 0.5,
+  },
   homeHeaderText: {
     fontSize: 30,
     textTransform: 'capitalize',
@@ -45,6 +50,73 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: '700',
     textAlign: 'center',
+    color: mainColour,
+  },
+  selectView: {
+    borderWidth: 2,
+    borderColor: mainColour,
+    width: '86%',
+    margin: 10,
+    position: 'absolute',
+    alignSelf: 'center',
+    top: 40,
+    left: 20,
+    backgroundColor: secondaryColour,
+  },
+  selectHeader: {
+    fontSize: 32,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  selectText: {
+    fontSize: 25,
+    textAlign: 'center',
+    paddingVertical: 10,
+    color: mainColour,
+  },
+  selectedSound: {
+    backgroundColor: mainColour,
+  },
+  notSelectedSound: {
+    backgroundColor: secondaryColour,
+  },
+  selectSoundText: {
+    fontSize: 25,
+    textAlign: 'center',
+    paddingVertical: 10,
+    color: secondaryColour,
+  },
+
+  hidden: {
+    display: 'none',
+  },
+  buttonView: {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 10,
+    justifyContent: 'space-evenly',
+  },
+  buttonSave: {
+    borderWidth: 2,
+    borderColor: mainColour,
+    backgroundColor: mainColour,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  buttonSaveText: {
+    fontSize: 20,
+    color: secondaryColour,
+  },
+  buttonCancel: {
+    borderWidth: 2,
+    borderColor: mainColour,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  buttonCancelText: {
+    fontSize: 20,
     color: mainColour,
   },
 });
