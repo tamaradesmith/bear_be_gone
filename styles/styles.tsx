@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '800',
     textAlign: 'center',
+    color: mainColour,
   },
   selectText: {
     fontSize: 25,
@@ -86,7 +87,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     color: secondaryColour,
   },
-
   hidden: {
     display: 'none',
   },
@@ -118,6 +118,45 @@ const styles = StyleSheet.create({
   buttonCancelText: {
     fontSize: 20,
     color: mainColour,
+  },
+  editView: {
+    borderWidth: 2,
+    borderColor: mainColour,
+    width: '86%',
+    margin: 10,
+    position: 'absolute',
+    alignSelf: 'center',
+    top: 40,
+    left: 20,
+    backgroundColor: secondaryColour,
+  },
+  numberInputView: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  numberInput: {
+    borderBottomColor: mainColour,
+    color: mainColour,
+    borderWidth: 2,
+    width: 40,
+    paddingVertical: 0,
+  },
+  downButton: {
+    borderColor: mainColour,
+    fontSize: 25,
+    backgroundColor: mainColour,
+    color: secondaryColour,
+    width: 40,
+    textAlign: 'center',
+  },
+  upButton: {
+    borderColor: mainColour,
+    fontSize: 25,
+    backgroundColor: 'red',
+    color: secondaryColour,
+    width: 40,
+    textAlign: 'center',
   },
 });
 
