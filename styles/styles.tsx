@@ -1,11 +1,8 @@
 import {StyleSheet} from 'react-native';
 
-const mainColour: string = '#121F16';
-// const secondaryColour: string = '#D7E8BA';
-// const secondaryColour: string = '#4B7357';
-
-const secondaryColour: string = '#ABDEBA';
-const background: string = '#DAF0E1';
+const mainColour: string = '#1E3424';
+const secondaryColour: string = '#D7E8BA';
+const background: string = '#FDF3EC';
 
 const styles = StyleSheet.create({
   app: {
@@ -25,6 +22,7 @@ const styles = StyleSheet.create({
   homeGrey: {
     minHeight: '100%',
     minWidth: '100%',
+    backgroundColor: '#979B97',
     opacity: 0.5,
   },
   homeHeaderText: {
@@ -61,11 +59,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     top: 40,
     left: 20,
-    backgroundColor: secondaryColour,
+    backgroundColor: background,
   },
   selectHeader: {
     fontSize: 32,
-    fontWeight: '800',
+    fontWeight: '700',
     textAlign: 'center',
     color: mainColour,
   },
@@ -75,11 +73,18 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     color: mainColour,
   },
+  selectTextHeader: {
+    fontSize: 28,
+    fontWeight: '700',
+    textAlign: 'center',
+    paddingVertical: 10,
+    color: mainColour,
+  },
   selectedSound: {
     backgroundColor: mainColour,
   },
   notSelectedSound: {
-    backgroundColor: secondaryColour,
+    backgroundColor: background,
   },
   selectSoundText: {
     fontSize: 25,
@@ -128,7 +133,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     top: 40,
     left: 20,
-    backgroundColor: secondaryColour,
+    backgroundColor: background,
   },
   numberInputView: {
     display: 'flex',
@@ -137,6 +142,7 @@ const styles = StyleSheet.create({
   },
   numberInput: {
     borderBottomColor: mainColour,
+    textAlign: 'center',
     color: mainColour,
     borderWidth: 2,
     width: 40,
@@ -144,6 +150,7 @@ const styles = StyleSheet.create({
   },
   downButton: {
     borderColor: mainColour,
+    borderWidth: 1,
     fontSize: 25,
     backgroundColor: mainColour,
     color: secondaryColour,
@@ -152,9 +159,10 @@ const styles = StyleSheet.create({
   },
   upButton: {
     borderColor: mainColour,
+    borderWidth: 1,
     fontSize: 25,
-    backgroundColor: 'red',
-    color: secondaryColour,
+    backgroundColor: '#EDF5E0',
+    color: mainColour,
     width: 40,
     textAlign: 'center',
   },

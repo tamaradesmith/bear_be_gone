@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -12,13 +12,23 @@ import styles from '../styles/styles';
 export interface Props {
   sound: {name: string; file: string};
   hidden: boolean;
-  inverval: number;
+  interval: number;
   changeInterval: Function;
   buttonPress: Function;
+  selectNewBell: Function;
 }
 
 const EditBell: React.FC<Props> = (props) => {
-  const {sound, inverval, buttonPress, hidden, changeInterval} = props;
+  const {
+    sound,
+    interval,
+    buttonPress,
+    hidden,
+    changeInterval,
+    selectNewBell,
+  } = props;
+
+  const [value, setValue] = useState(interval);
 
   function handleButtonPress(action: string) {
     buttonPress(action);
@@ -28,17 +38,32 @@ const EditBell: React.FC<Props> = (props) => {
     changeInterval(direction);
   }
 
+  const handleSelectBell = () => {
+    selectNewBell();
+  };
+
+  useEffect(() => {
+    setValue(interval);
+  }, [interval]);
+
   return (
     <View style={hidden ? styles.hidden : styles.editView}>
       <ScrollView>
         <Text style={styles.selectHeader}>Edit Bell Preference </Text>
-        <Text style={styles.selectText}>Current Bell:</Text>
-        <Text style={styles.selectText}> {sound.name} change sound</Text>
-        <Text style={styles.selectText}> Intervals Length/Sec:</Text>
+
+        <Text style={styles.selectTextHeader}>Current Bell:</Text>
+        <TouchableOpacity onPress={handleSelectBell}>
+          <Text style={styles.selectText}> {sound.name} </Text>
+          <View>
+            <Text style={styles.selectText}> Change Bell</Text>
+          </View>
+        </TouchableOpacity>
+
+        <Text style={styles.selectTextHeader}> Intervals Length/Sec:</Text>
         <View style={styles.numberInputView}>
           <TextInput
             keyboardType="numeric"
-            value={`${inverval}`}
+            value={`${value}`}
             style={styles.numberInput}
           />
           <TouchableOpacity onPress={() => changeInteral('add')}>

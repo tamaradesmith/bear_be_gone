@@ -28,9 +28,12 @@ const PresentSound: {file: string; name: string}[] = [
 const Home: React.FC<Props> = () => {
   const [hideSelect, setHideSelect] = useState(true);
   const [hideEdit, setHideEdit] = useState(true);
+  const [grey, setGrey] = useState(false);
 
   const [playing, setPlaying] = useState<Sound | undefined>(undefined);
   const [bellPlay, setBellPlay] = useState(false);
+  const [continueBell, setContinueBell] = useState(false);
+
   const [currentBell, setCurrentBell] = useState({file: 'none', name: 'none'});
   const [newBellSound, setNewBellSound] = useState({
     name: 'Chinese Gong',
@@ -43,11 +46,14 @@ const Home: React.FC<Props> = () => {
     interval: 0,
     playbackType: 'multitude',
   });
+  const [interval, setInterval] = useState(0);
+
+  console.log('interval', interval);
+  console.log('continueBell', continueBell);
 
   // PLAY FUNCTIONS
 
   function playSound() {
-    console.log('bell');
     setBellPlay(true);
     const bell = new Sound(currentBell.file, Sound.MAIN_BUNDLE, (error) => {
       if (error) {
@@ -68,41 +74,61 @@ const Home: React.FC<Props> = () => {
   }
 
   function continuesPlaySound() {
-    setBellPlay(true);
-    const bell = new Sound(currentBell.file, Sound.MAIN_BUNDLE, (error) => {
-      if (error) {
-        console.error('Failed to load the sound: ', error);
-        return;
-      }
-      setPlaying(bell);
-
-      console.log(bellPlay);
-      bell.play((success) => {
-        if (success) {
-          playSoundAgain(bell, 1);
-        } else {
-          console.error();
-          ('playback failed due to audio decoding errors');
+    const bell = new Sound(
+      currentBell.file,
+      Sound.MAIN_BUNDLE,
+      async (error) => {
+        if (error) {
+          console.error('Failed to load the sound: ', error);
+          return;
         }
-      });
-    });
+        setPlaying(bell);
+        setBellPlay(true);
+        setContinueBell(true);
+        // bell.play((success) => {
+        //   if (success) {
+        //     setTimeout(() => {
+        //       playSoundAgain(bell);
+        //     }, userPreference.interval * 1000);
+        //   } else {
+        //     console.error();
+        //     ('playback failed due to audio decoding errors');
+        //   }
+        // });
+      },
+    );
   }
 
-  function playSoundAgain(bell: Sound, index: number) {
-    setTimeout(() => {
-      if (bellPlay || index < 2) {
-        console.log('playing playing');
-        bell.play();
-        playSoundAgain(bell, index + 1);
-      }
-    }, userPreference.interval * 1000);
-  }
+  //  const timer = setTimeout(() => {
+  //    setTime(time + 1);
+  //  }, 1000);
+  //  return () => {
+  //    clearTimeout(timer);
+  //  };
+  // async function playSoundAgain(bell: Sound) {
+  //   let timer;
+  //   const ring = () => {
+  //     if (continueBell) {
+  //       console.log('playing playing');
+  //       bell.play();
+  //     }
+  //     if (continueBell){
+  //        timer = setTimeout(ring, userPreference.interval * 1000)};
+  //     return;
+  //   };
+
+  //   ring();
+  //   return () => {
+  //     clearTimeout(timer);
+  //   };
+  // }
 
   function stopSound() {
     if (playing) {
       playing.stop();
       setBellPlay(false);
       setPlaying(undefined);
+      setContinueBell(false);
     }
   }
 
@@ -110,6 +136,7 @@ const Home: React.FC<Props> = () => {
 
   function selectNewSound() {
     setHideSelect(hideSelect ? false : true);
+    setGrey(!grey ? true : false);
   }
 
   function ListenToSound(newBell: {name: string; file: string}) {
@@ -150,6 +177,7 @@ const Home: React.FC<Props> = () => {
 
   function handleCancel() {
     setHideSelect(true);
+    setGrey(false);
     setNewBellSound(currentBell);
   }
 
@@ -158,6 +186,7 @@ const Home: React.FC<Props> = () => {
       await AsyncStorage.setItem('bell', JSON.stringify(newBellSound));
       setCurrentBell(newBellSound);
       setHideSelect(true);
+      setGrey(false);
     } catch (error) {
       console.error('storage Data: ', error.message);
     }
@@ -167,6 +196,7 @@ const Home: React.FC<Props> = () => {
 
   function editSoundPreference() {
     setHideEdit(hideEdit ? false : true);
+    setGrey(hideEdit ? true : false);
   }
 
   function handlePreference(action: string) {
@@ -176,6 +206,7 @@ const Home: React.FC<Props> = () => {
         break;
       case 'cancel':
         setHideEdit(true);
+        setGrey(false);
         cancelPreferences();
         break;
       default:
@@ -187,6 +218,7 @@ const Home: React.FC<Props> = () => {
     try {
       await AsyncStorage.setItem('preferences', JSON.stringify(userPreference));
       setHideEdit(true);
+      setGrey(false);
     } catch (error) {
       console.error('storage Data: ', error.message);
     }
@@ -194,32 +226,42 @@ const Home: React.FC<Props> = () => {
 
   async function cancelPreferences() {
     const getPreferences = await AsyncStorage.getItem('preferences');
+    console.log('cancelPreferences -> getPreferences', getPreferences);
     if (getPreferences) {
       const preferences = JSON.parse(getPreferences);
       if (!preferences.interval) {
         preferences.interval = 5;
       }
       setUserPreference(preferences);
+      setInterval(preferences.interval);
     }
   }
 
   function changeInterval(direction: string) {
     const user = userPreference;
+    let newValue;
     switch (direction) {
       case 'add':
-        const newValue = userPreference.interval + 1;
+        newValue = userPreference.interval + 1;
         user.interval = newValue;
         setUserPreference(user);
+        setInterval(newValue);
         break;
       case 'mins':
-        const newValueMins = userPreference.interval - 1;
-        user.interval = newValueMins;
+        newValue = userPreference.interval - 1;
+        user.interval = newValue;
         setUserPreference(user);
+        setInterval(newValue);
         break;
       default:
         break;
     }
+    return newValue;
   }
+
+  const EditSelectNewBell = () => {
+    setHideSelect(false);
+  };
 
   // USE EFFECT
 
@@ -251,8 +293,10 @@ const Home: React.FC<Props> = () => {
             preferences.playbackType = 'multitude';
           }
           setUserPreference(preferences);
+          setInterval(preferences.interval);
         } else {
           setUserPreference({interval: 5, playbackType: 'multitude'});
+          setInterval(5);
         }
       }
     };
@@ -262,13 +306,29 @@ const Home: React.FC<Props> = () => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log('BellPlay useEffect : ', bellPlay);
-  }, [bellPlay]);
+  // let timer;
+
+  // useEffect(() => {
+  //   const ring = () => {
+  //     if (continueBell && playing) {
+  //       console.log('playing playing');
+  //       playing.play();
+  //     }
+  //   };
+
+  //   if (continueBell) {
+  //     timer = setInterval(ring, userPreference.interval * 1000);
+  //     // } else {
+  //     //   return () => {
+  //     //     clearTimeout(timer);
+  //     //   };
+  //   }
+  //   // ring();
+  // }, [continueBell]);
 
   return (
     <View>
-      <View style={hideSelect ? styles.Home : styles.homeGrey}>
+      <View style={!grey ? styles.Home : styles.homeGrey}>
         <View style={styles.homeHeader}>
           <Text style={styles.homeHeaderText}> BEAR BE GONE</Text>
           <Image source={require('../images/bear.png')} style={styles.image} />
@@ -313,9 +373,10 @@ const Home: React.FC<Props> = () => {
       <EditBell
         sound={currentBell}
         hidden={hideEdit}
-        inverval={userPreference.interval}
+        interval={userPreference.interval}
         buttonPress={handlePreference}
         changeInterval={changeInterval}
+        selectNewBell={EditSelectNewBell}
       />
 
       <SelectSound
