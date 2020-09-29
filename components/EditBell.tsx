@@ -13,9 +13,11 @@ export interface Props {
   sound: {name: string; file: string};
   hidden: boolean;
   interval: number;
+  playbackType: string;
   changeInterval: Function;
   buttonPress: Function;
   selectNewBell: Function;
+  selectPlaybackType: Function;
 }
 
 const EditBell: React.FC<Props> = (props) => {
@@ -23,23 +25,29 @@ const EditBell: React.FC<Props> = (props) => {
     sound,
     interval,
     buttonPress,
+    playbackType,
     hidden,
     changeInterval,
     selectNewBell,
+    selectPlaybackType,
   } = props;
 
   const [value, setValue] = useState(interval);
 
-  function handleButtonPress(action: string) {
+  const handleButtonPress = (action: string) => {
     buttonPress(action);
-  }
+  };
 
-  function changeInteral(direction: string) {
+  const changeInteral = (direction: string) => {
     changeInterval(direction);
-  }
+  };
 
   const handleSelectBell = () => {
     selectNewBell();
+  };
+
+  const handlePlaybackType = (playback: string) => {
+    selectPlaybackType(playback);
   };
 
   useEffect(() => {
@@ -52,10 +60,12 @@ const EditBell: React.FC<Props> = (props) => {
         <Text style={styles.selectHeader}>Edit Bell Preference </Text>
 
         <Text style={styles.selectTextHeader}>Current Bell:</Text>
-        <TouchableOpacity onPress={handleSelectBell}>
+        <TouchableOpacity
+          onPress={handleSelectBell}
+          style={styles.buttonSelectView}>
           <Text style={styles.selectText}> {sound.name} </Text>
-          <View>
-            <Text style={styles.selectText}> Change Bell</Text>
+          <View style={styles.buttonSelect}>
+            <Text style={styles.buttonSelectText}> Change Bell</Text>
           </View>
         </TouchableOpacity>
 
@@ -73,7 +83,43 @@ const EditBell: React.FC<Props> = (props) => {
             <Text style={styles.downButton}>&#8609;</Text>
           </TouchableOpacity>
         </View>
-
+        <View>
+          <Text style={styles.selectTextHeader}> Playback Type:</Text>
+          <TouchableOpacity
+            onPress={() => handlePlaybackType('single')}
+            style={
+              playbackType === 'single'
+                ? styles.selectedSound
+                : styles.notSelectedSound
+            }>
+            <Text
+              style={
+                playbackType === 'single'
+                  ? styles.selectSoundText
+                  : styles.selectText
+              }>
+              {' '}
+              Single{' '}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => handlePlaybackType('continuous')}
+            style={
+              playbackType === 'continuous'
+                ? styles.selectedSound
+                : styles.notSelectedSound
+            }>
+            <Text
+              style={
+                playbackType === 'continuous'
+                  ? styles.selectSoundText
+                  : styles.selectText
+              }>
+              {' '}
+              Continuous{' '}
+            </Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.buttonView}>
           <TouchableOpacity
             onPress={() => handleButtonPress('save')}

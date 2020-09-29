@@ -166,6 +166,25 @@ const styles = StyleSheet.create({
     width: 40,
     textAlign: 'center',
   },
+  buttonSelect: {
+    borderWidth: 2,
+    borderColor: mainColour,
+    backgroundColor: mainColour,
+    paddingHorizontal: 5,
+    borderRadius: 6,
+    width: 150,
+    alignSelf: 'center',
+    marginVertical: 10,
+  },
+  buttonSelectText: {
+    fontSize: 20,
+    textAlign: 'center',
+    paddingVertical: 10,
+    color: background,
+  },
+  buttonSelectView: {
+    display: 'flex',
+  },
 });
 
 export default styles;

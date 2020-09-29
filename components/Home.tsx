@@ -39,17 +39,15 @@ const Home: React.FC<Props> = () => {
     name: 'Chinese Gong',
     file: 'chinese_gong_daniel_simon.mp3',
   });
-  const [userPreference, setUserPreference] = useState<{
-    interval: number;
-    playbackType: string;
-  }>({
-    interval: 0,
-    playbackType: 'multitude',
-  });
+  // const [userPreference, setUserPreference] = useState<{
+  //   interval: number;
+  //   playbackType: string;
+  // }>({
+  //   interval: 0,
+  //   playbackType: 'continuous',
+  // });
   const [interval, setInterval] = useState(0);
-
-  console.log('interval', interval);
-  console.log('continueBell', continueBell);
+  const [playbackType, setPlaybackType] = useState('continuous');
 
   // PLAY FUNCTIONS
 
@@ -85,6 +83,8 @@ const Home: React.FC<Props> = () => {
         setPlaying(bell);
         setBellPlay(true);
         setContinueBell(true);
+        bell.setNumberOfLoops(-1);
+        bell.play();
         // bell.play((success) => {
         //   if (success) {
         //     setTimeout(() => {
@@ -213,10 +213,15 @@ const Home: React.FC<Props> = () => {
         break;
     }
   }
-
+  const selectPlaybackType = async (type: string) => {
+    setPlaybackType(type);
+  };
   async function savePreferences() {
     try {
-      await AsyncStorage.setItem('preferences', JSON.stringify(userPreference));
+      await AsyncStorage.setItem(
+        'preferences',
+        JSON.stringify({playbackType, interval}),
+      );
       setHideEdit(true);
       setGrey(false);
     } catch (error) {
@@ -226,31 +231,34 @@ const Home: React.FC<Props> = () => {
 
   async function cancelPreferences() {
     const getPreferences = await AsyncStorage.getItem('preferences');
-    console.log('cancelPreferences -> getPreferences', getPreferences);
     if (getPreferences) {
       const preferences = JSON.parse(getPreferences);
       if (!preferences.interval) {
         preferences.interval = 5;
       }
-      setUserPreference(preferences);
+      if (!preferences.playbackType) {
+        preferences.playbackType = 'continuous';
+      }
+      // setUserPreference(preferences);
+      setPlaybackType(preferences.playbackType);
       setInterval(preferences.interval);
     }
   }
 
   function changeInterval(direction: string) {
-    const user = userPreference;
+    // const user = {};
     let newValue;
     switch (direction) {
       case 'add':
-        newValue = userPreference.interval + 1;
-        user.interval = newValue;
-        setUserPreference(user);
+        newValue = interval + 1;
+        // user.interval = newValue;
+        // setUserPreference(user);
         setInterval(newValue);
         break;
       case 'mins':
-        newValue = userPreference.interval - 1;
-        user.interval = newValue;
-        setUserPreference(user);
+        newValue = interval - 1;
+        // user.interval = newValue;
+        // setUserPreference(user);
         setInterval(newValue);
         break;
       default:
@@ -290,13 +298,15 @@ const Home: React.FC<Props> = () => {
             preferences.interval = 5;
           }
           if (!preferences.playbackType) {
-            preferences.playbackType = 'multitude';
+            preferences.playbackType = 'continuous';
           }
-          setUserPreference(preferences);
+          // setUserPreference(preferences);
           setInterval(preferences.interval);
+          setPlaybackType(preferences.playbackType);
         } else {
-          setUserPreference({interval: 5, playbackType: 'multitude'});
+          // setUserPreference({interval: 5, playbackType: 'continuous'});
           setInterval(5);
+          setPlaybackType('continuous');
         }
       }
     };
@@ -342,13 +352,11 @@ const Home: React.FC<Props> = () => {
           {!bellPlay ? (
             <TouchableOpacity
               onPress={
-                userPreference.playbackType === 'multitude'
-                  ? continuesPlaySound
-                  : playSound
+                playbackType === 'continuous' ? continuesPlaySound : playSound
               }
               disabled={bellPlay}>
               <Text style={styles.text}>
-                {userPreference.playbackType === 'multitude' ? (
+                {playbackType === 'continuous' ? (
                   <>Continual Play Bell</>
                 ) : (
                   <> Play Bell</>
@@ -373,10 +381,12 @@ const Home: React.FC<Props> = () => {
       <EditBell
         sound={currentBell}
         hidden={hideEdit}
-        interval={userPreference.interval}
+        interval={interval}
+        playbackType={playbackType}
         buttonPress={handlePreference}
         changeInterval={changeInterval}
         selectNewBell={EditSelectNewBell}
+        selectPlaybackType={selectPlaybackType}
       />
 
       <SelectSound
