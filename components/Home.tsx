@@ -35,17 +35,7 @@ const Home: React.FC<Props> = () => {
   const [continueBell, setContinueBell] = useState(false);
 
   const [currentBell, setCurrentBell] = useState({file: 'none', name: 'none'});
-  const [newBellSound, setNewBellSound] = useState({
-    name: 'Chinese Gong',
-    file: 'chinese_gong_daniel_simon.mp3',
-  });
-  // const [userPreference, setUserPreference] = useState<{
-  //   interval: number;
-  //   playbackType: string;
-  // }>({
-  //   interval: 0,
-  //   playbackType: 'continuous',
-  // });
+  const [newBellSound, setNewBellSound] = useState(PresentSound[0]);
   const [interval, setInterval] = useState(0);
   const [playbackType, setPlaybackType] = useState('continuous');
 
@@ -83,45 +73,9 @@ const Home: React.FC<Props> = () => {
         setPlaying(bell);
         setBellPlay(true);
         setContinueBell(true);
-        bell.setNumberOfLoops(-1);
-        bell.play();
-        // bell.play((success) => {
-        //   if (success) {
-        //     setTimeout(() => {
-        //       playSoundAgain(bell);
-        //     }, userPreference.interval * 1000);
-        //   } else {
-        //     console.error();
-        //     ('playback failed due to audio decoding errors');
-        //   }
-        // });
       },
     );
   }
-
-  //  const timer = setTimeout(() => {
-  //    setTime(time + 1);
-  //  }, 1000);
-  //  return () => {
-  //    clearTimeout(timer);
-  //  };
-  // async function playSoundAgain(bell: Sound) {
-  //   let timer;
-  //   const ring = () => {
-  //     if (continueBell) {
-  //       console.log('playing playing');
-  //       bell.play();
-  //     }
-  //     if (continueBell){
-  //        timer = setTimeout(ring, userPreference.interval * 1000)};
-  //     return;
-  //   };
-
-  //   ring();
-  //   return () => {
-  //     clearTimeout(timer);
-  //   };
-  // }
 
   function stopSound() {
     if (playing) {
@@ -239,26 +193,21 @@ const Home: React.FC<Props> = () => {
       if (!preferences.playbackType) {
         preferences.playbackType = 'continuous';
       }
-      // setUserPreference(preferences);
       setPlaybackType(preferences.playbackType);
       setInterval(preferences.interval);
     }
   }
 
   function changeInterval(direction: string) {
-    // const user = {};
     let newValue;
     switch (direction) {
       case 'add':
         newValue = interval + 1;
-        // user.interval = newValue;
-        // setUserPreference(user);
+
         setInterval(newValue);
         break;
       case 'mins':
         newValue = interval - 1;
-        // user.interval = newValue;
-        // setUserPreference(user);
         setInterval(newValue);
         break;
       default:
@@ -300,11 +249,9 @@ const Home: React.FC<Props> = () => {
           if (!preferences.playbackType) {
             preferences.playbackType = 'continuous';
           }
-          // setUserPreference(preferences);
           setInterval(preferences.interval);
           setPlaybackType(preferences.playbackType);
         } else {
-          // setUserPreference({interval: 5, playbackType: 'continuous'});
           setInterval(5);
           setPlaybackType('continuous');
         }
@@ -316,25 +263,35 @@ const Home: React.FC<Props> = () => {
     };
   }, []);
 
-  // let timer;
+  let timer: ReturnType<typeof setTimeout>;
 
-  // useEffect(() => {
-  //   const ring = () => {
-  //     if (continueBell && playing) {
-  //       console.log('playing playing');
-  //       playing.play();
-  //     }
-  //   };
+  useEffect(() => {
+    const ring = () => {
+      if (continueBell && playing) {
+        playing.play((success) => {
+          if (success) {
+            if (continueBell) {
+            timer = setTimeout(() => {
+                ring();
+              }, interval * 1000);
+            } else {
+              playing.stop()
+            }
+          } else {
+            console.error();
+            ('playback failed due to audio decoding errors');
+            setContinueBell(false);
+          }
+        });
+      }
+    };
+    if (continueBell){
+      ring();
 
-  //   if (continueBell) {
-  //     timer = setInterval(ring, userPreference.interval * 1000);
-  //     // } else {
-  //     //   return () => {
-  //     //     clearTimeout(timer);
-  //     //   };
-  //   }
-  //   // ring();
-  // }, [continueBell]);
+    } else {
+      clearTimeout(timer)
+    }
+  }, [continueBell]);
 
   return (
     <View>
