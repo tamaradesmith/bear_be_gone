@@ -12,6 +12,7 @@ import styles from '../styles/styles';
 export interface Props {
   sound: {name: string; file: string};
   hidden: boolean;
+  select: boolean;
   interval: number;
   playbackType: string;
   changeInterval: Function;
@@ -27,6 +28,7 @@ const EditBell: React.FC<Props> = (props) => {
     buttonPress,
     playbackType,
     hidden,
+    select,
     changeInterval,
     selectNewBell,
     selectPlaybackType,
@@ -123,12 +125,14 @@ const EditBell: React.FC<Props> = (props) => {
         <View style={styles.buttonView}>
           <TouchableOpacity
             onPress={() => handleButtonPress('save')}
-            style={styles.buttonSave}>
+            style={select ? styles.buttonSave : styles.buttonDisable}
+            disabled={!select}>
             <Text style={styles.buttonSaveText}> Save</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => handleButtonPress('cancel')}
-            style={styles.buttonCancel}>
+            style={select ? styles.buttonCancel : styles.buttonDisable}
+            disabled={!select}>
             <Text style={styles.buttonCancelText}> Cancel</Text>
           </TouchableOpacity>
         </View>

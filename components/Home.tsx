@@ -263,19 +263,18 @@ const Home: React.FC<Props> = () => {
     };
   }, []);
 
-  let timer: ReturnType<typeof setTimeout>;
-
   useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | null = null;
     const ring = () => {
       if (continueBell && playing) {
         playing.play((success) => {
           if (success) {
             if (continueBell) {
-            timer = setTimeout(() => {
+              timer = setTimeout(() => {
                 ring();
               }, interval * 1000);
             } else {
-              playing.stop()
+              playing.stop();
             }
           } else {
             console.error();
@@ -285,13 +284,14 @@ const Home: React.FC<Props> = () => {
         });
       }
     };
-    if (continueBell){
+    if (continueBell) {
       ring();
-
     } else {
-      clearTimeout(timer)
+      if (timer) {
+        clearTimeout(timer);
+      }
     }
-  }, [continueBell]);
+  }, [continueBell, playing, interval]);
 
   return (
     <View>
@@ -344,6 +344,7 @@ const Home: React.FC<Props> = () => {
         changeInterval={changeInterval}
         selectNewBell={EditSelectNewBell}
         selectPlaybackType={selectPlaybackType}
+        select={hideSelect}
       />
 
       <SelectSound

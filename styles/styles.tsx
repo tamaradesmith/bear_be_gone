@@ -124,6 +124,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: mainColour,
   },
+  buttonDisable: {
+    borderWidth: 2,
+    borderColor: mainColour,
+    backgroundColor: '#979B97',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
   editView: {
     borderWidth: 2,
     borderColor: mainColour,
