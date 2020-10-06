@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View, Image, TouchableOpacity} from 'react-native';
-
+import SplashScreen from 'react-native-splash-screen';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Sound from 'react-native-sound';
@@ -292,6 +292,10 @@ const Home: React.FC<Props> = () => {
       }
     }
   }, [continueBell, playing, interval]);
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
   return (
     <View>
